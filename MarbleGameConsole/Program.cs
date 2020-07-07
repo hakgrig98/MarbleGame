@@ -14,11 +14,13 @@ namespace MarbleGameConsole
         private static readonly IWallFactory _wallFactory;
         private static readonly IPointFactory _pointFactory;
         private static readonly IHelper _helper;
+        private static int _squareCount;
 
         private static IPoint[,] _pointMatrix;
         private static List<Position> _position;
 
         #endregion
+
         #region Ctor
         static Program()
         {
@@ -36,6 +38,7 @@ namespace MarbleGameConsole
 
             int[] splitarr = Array.ConvertAll(line.Trim().Split(' '), (s) => int.Parse(s));
 
+            _squareCount = splitarr[0];
             _pointMatrix = new IPoint[splitarr[0], splitarr[0]];
 
             int countOfMarbles = splitarr[1];
@@ -66,9 +69,9 @@ namespace MarbleGameConsole
         {
             _position = new List<Position>();
 
-            for (int i = 0; i < _pointMatrix.Length; i++)
+            for (int i = 0; i < _squareCount; i++)
             {
-                for (int j = 0; j < _pointMatrix.Length; j++)
+                for (int j = 0; j < _squareCount; j++)
                 {
                     if (_pointMatrix[i, j] != null)
                     {
@@ -98,18 +101,22 @@ namespace MarbleGameConsole
                             }
                             else if (currentMarble.J == currentMarbleHole.J)
                             {
-                                if (currentMarble.I > currentMarbleHole.I)
+                                if (IsWall(currentMarble.J))
                                 {
-                                    _position.Add(Position.N);
-                                    MoveMatrix(Position.N);
-                                }
-                                else
-                                {
-                                    _position.Add(Position.S);
-                                    MoveMatrix(Position.S);
-                                }
+                                    if (currentMarble.I > currentMarbleHole.I)
+                                    {
+                                        _position.Add(Position.N);
+                                        MoveMatrix(Position.N);
+                                    }
+                                    else
+                                    {
+                                        _position.Add(Position.S);
+                                        MoveMatrix(Position.S);
+                                    }
 
-                                _pointMatrix[i, j] = null;
+                                    _pointMatrix[i, j] = null;
+
+                                }
                             }
                             else
                                 continue;
@@ -135,9 +142,9 @@ namespace MarbleGameConsole
 
         private static void MoveMatrix(Position position)
         {
-            for (int i = 0; i < _pointMatrix.Length; i++)
+            for (int i = 0; i < _squareCount; i++)
             {
-                for (int j = 0; j < _pointMatrix.Length; j++)
+                for (int j = 0; j < _squareCount; j++)
                 {
                     if (_pointMatrix[i, j] != null)
                     {
