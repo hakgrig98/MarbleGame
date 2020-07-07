@@ -7,6 +7,6 @@ namespace MarbleGameLib.Models
     public interface IPoint
     {
         IMarble Marble { get; set; }
-        IWall Wall { get;}
+        IWall Wall { get; set; }
     }
 }

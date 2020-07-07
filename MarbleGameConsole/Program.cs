@@ -204,8 +204,6 @@ namespace MarbleGameConsole
 
                         if (currentMarbleMatrix != null && currentMarbleMatrix.Marble != null)
                         {
-
-
                             switch (position)
                             {
                                 case Position.E:
@@ -222,10 +220,10 @@ namespace MarbleGameConsole
                                                 }
                                                 else
                                                 {
-                                                    _pointMatrix[i, _squareCount-1] = _pointMatrix[i, j];
+                                                    _pointMatrix[i, _squareCount - 1] = _pointMatrix[i, j];
                                                     _pointMatrix[i, j] = null;
                                                 }
-                                                    
+
                                             }
                                         }
                                     }
@@ -234,23 +232,26 @@ namespace MarbleGameConsole
                                     break;
                                 case Position.S:
                                     {
-                                        bool isWall = IsWall(i, j, _squareCount-1, j);
+
+                                        bool isWall = IsWall(i, j, _squareCount - 1, j);
                                         if (isWall)
                                         {
-                                            for (int k = j; k < _squareCount; k++)
+                                            for (int l = i; l < _squareCount; l++)
                                             {
-                                                if (_pointMatrix[i, j] != null && _pointMatrix[i, j].Wall != null)
+                                                if (_pointMatrix[l, j]!=null &&_pointMatrix[l, j].Wall != null)
                                                 {
-                                                    _pointMatrix[_squareCount-1, j] = _pointMatrix[i, j];
-                                                    _pointMatrix[i, j] = null;
+                                                    _pointMatrix[l, j] =_helper.DeepClone(_pointMatrix[i, j]) as IPoint;
+                                                    _pointMatrix[l, j].Wall = null;
+                                                    _pointMatrix[i, j].Marble = null;
+                                                    break;
                                                 }
-                                                else
-                                                {
-                                                    _pointMatrix[_squareCount-1, j] = _pointMatrix[i, j];
-                                                    _pointMatrix[i, j] = null;
-                                                }
-
                                             }
+                                        }
+                                        else
+                                        {
+                                           _pointMatrix[_squareCount - 1, j] = _helper.DeepClone(_pointMatrix[i, j]) as IPoint;
+                                            _pointMatrix[_squareCount - 1, j].Wall = null;
+                                            _pointMatrix[i, j].Marble = null;
                                         }
                                     }
                                     break;
@@ -261,14 +262,14 @@ namespace MarbleGameConsole
                                         {
                                             for (int k = j; k < _squareCount; k++)
                                             {
-                                                if (_pointMatrix[i, j-k] != null && _pointMatrix[i, j-k].Wall != null)
+                                                if (_pointMatrix[i, j - k] != null && _pointMatrix[i, j - k].Wall != null)
                                                 {
-                                                    _pointMatrix[i, j-k] = _pointMatrix[i, j];
+                                                    _pointMatrix[i, j - k] = _pointMatrix[i, j];
                                                     _pointMatrix[i, j] = null;
                                                 }
                                                 else
                                                 {
-                                                    _pointMatrix[i, j-_squareCount - 1] = _pointMatrix[i, j];
+                                                    _pointMatrix[i, j - _squareCount - 1] = _pointMatrix[i, j];
                                                     _pointMatrix[i, j] = null;
                                                 }
 
