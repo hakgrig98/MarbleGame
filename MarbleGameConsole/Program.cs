@@ -8,6 +8,7 @@ namespace MarbleGameConsole
 {
     class Program
     {
+        #region Fields
         private static readonly IMarbleFactory _marbleFactory;
         private static readonly IHoleFactory _holeFactory;
         private static readonly IWallFactory _wallFactory;
@@ -15,8 +16,10 @@ namespace MarbleGameConsole
         private static readonly IHelper _helper;
 
         private static IPoint[,] _pointMatrix;
-        private static IEnumerable<Position> _position;
+        private static List<Position> _position;
 
+        #endregion
+        #region Ctor
         static Program()
         {
             _marbleFactory = new MarbleFactory();
@@ -25,6 +28,7 @@ namespace MarbleGameConsole
             _pointFactory = new PointFactory();
             _helper = new Helper();
         }
+        #endregion
         #region Methods
         private static void ReadInput()
         {
@@ -60,9 +64,58 @@ namespace MarbleGameConsole
 
         private static void Process()
         {
+            _position = new List<Position>();
+
             for (int i = 0; i < _pointMatrix.Length; i++)
             {
-                //_pointMatrix[]
+                for (int j = 0; j < _pointMatrix.Length; j++)
+                {
+                    if (_pointMatrix[i, j] != null)
+                    {
+                        var currentMarbleMatrix = _pointMatrix[i, j];
+
+                        if (currentMarbleMatrix.Marble != null)
+                        {
+                            var currentMarble = currentMarbleMatrix.Marble;
+                            var currentMarbleHole = currentMarble.Hole;
+                            if (currentMarble.I == currentMarbleHole.I)
+                            {
+                                if (IsWall(i))
+                                {
+                                    if (currentMarble.J > currentMarbleHole.J)
+                                    {
+                                        _position.Add(Position.E);
+                                        MoveMatrix(Position.E);
+                                    }
+                                    else
+                                    {
+                                        _position.Add(Position.W);
+                                        MoveMatrix(Position.W);
+                                    }
+
+                                    _pointMatrix[i, j] = null;
+                                }
+                            }
+                            else if (currentMarble.J == currentMarbleHole.J)
+                            {
+                                if (currentMarble.I > currentMarbleHole.I)
+                                {
+                                    _position.Add(Position.N);
+                                    MoveMatrix(Position.N);
+                                }
+                                else
+                                {
+                                    _position.Add(Position.S);
+                                    MoveMatrix(Position.S);
+                                }
+
+                                _pointMatrix[i, j] = null;
+                            }
+                            else
+                                continue;
+                        }
+                    }
+                }
             }
         }
 
@@ -74,12 +127,31 @@ namespace MarbleGameConsole
             }
         }
         #endregion
-        
-        static void Main(string[] args)
+        #region Helpers
+        private static bool IsWall(int i)
         {
-            ReadInput();
-            Process();
-            PrintOutput();
+            return false;
+        }
+
+        private static void MoveMatrix(Position position)
+        {
+            for (int i = 0; i < _pointMatrix.Length; i++)
+            {
+                for (int j = 0; j < _pointMatrix.Length; j++)
+                {
+                    if (_pointMatrix[i, j] != null)
+                    {
+                        var currentMarbleMatrix = _pointMatrix[i, j];
+                    }
+                }
+            }
+        }
+            #endregion
+            static void Main(string[] args)
+            {
+                ReadInput();
+                Process();
+                PrintOutput();
+            }
         }
     }
-}
