@@ -81,9 +81,10 @@ namespace MarbleGameConsole
                         {
                             var currentMarble = currentMarbleMatrix.Marble;
                             var currentMarbleHole = currentMarble.Hole;
+
                             if (currentMarble.I == currentMarbleHole.I)
                             {
-                                if (IsWall(i, j, currentMarbleHole.I, currentMarbleHole.J))
+                                if (!IsWall(i, j, currentMarbleHole.I, currentMarbleHole.J))
                                 {
                                     if (currentMarble.J > currentMarbleHole.J)
                                     {
@@ -101,7 +102,7 @@ namespace MarbleGameConsole
                             }
                             else if (currentMarble.J == currentMarbleHole.J)
                             {
-                                if (IsWall(i, j, currentMarbleHole.I, currentMarbleHole.J))
+                                if (!IsWall(i, j, currentMarbleHole.I, currentMarbleHole.J))
                                 {
                                     if (currentMarble.I > currentMarbleHole.I)
                                     {
@@ -161,35 +162,35 @@ namespace MarbleGameConsole
                         if (j + l >= _squareCount)
                             break;
 
-                        if (_pointMatrix[i, j + l] != null && _pointMatrix[i, j + l].Wall != null)
-                            return false;
+                        if (_pointMatrix[i, j + l] != null && _pointMatrix[i, j + l].Marble != null)
+                            return true;
                         break;
                     case Position.N:
                         if (i - l < 0)
                             break;
 
-                        if (_pointMatrix[i - l, j] != null && _pointMatrix[i - l, j].Wall != null)
-                            return false;
+                        if (_pointMatrix[i - l, j] != null && _pointMatrix[i - l, j].Marble != null)
+                            return true;
                         break;
                     case Position.S:
                         if (i + l >= _squareCount)
                             break;
 
-                        if (_pointMatrix[i + l, j] != null && _pointMatrix[i + l, j].Wall != null)
-                            return false;
+                        if (_pointMatrix[i + l, j] != null && _pointMatrix[i + l, j].Marble != null)
+                            return true;
                         break;
                     case Position.W:
                         if (j - l < 0)
                             break;
 
-                        if (_pointMatrix[i, j - l] != null && _pointMatrix[i, j - l].Wall != null)
-                            return false;
+                        if (_pointMatrix[i, j - l] != null && _pointMatrix[i, j - l].Marble != null)
+                            return true;
                         break;
                     default:
                         break;
                 }
             }
-            return true;
+            return false;
         }
 
         private static void MoveMatrix(Position position)
@@ -233,14 +234,16 @@ namespace MarbleGameConsole
                                 case Position.S:
                                     {
 
+                                        if (i == _squareCount - 1)
+                                            continue;
                                         bool isWall = IsWall(i, j, _squareCount - 1, j);
                                         if (isWall)
                                         {
                                             for (int l = i; l < _squareCount; l++)
                                             {
-                                                if (_pointMatrix[l, j]!=null &&_pointMatrix[l, j].Wall != null)
+                                                if (_pointMatrix[l, j] != null && _pointMatrix[l, j].Wall != null)
                                                 {
-                                                    _pointMatrix[l, j] =_helper.DeepClone(_pointMatrix[i, j]) as IPoint;
+                                                    _pointMatrix[l, j] = _helper.DeepClone(_pointMatrix[i, j]) as IPoint;
                                                     _pointMatrix[l, j].Wall = null;
                                                     _pointMatrix[i, j].Marble = null;
                                                     break;
@@ -249,9 +252,12 @@ namespace MarbleGameConsole
                                         }
                                         else
                                         {
-                                           _pointMatrix[_squareCount - 1, j] = _helper.DeepClone(_pointMatrix[i, j]) as IPoint;
+                                            _pointMatrix[_squareCount - 1, j] = _helper.DeepClone(_pointMatrix[i, j]) as IPoint;
                                             _pointMatrix[_squareCount - 1, j].Wall = null;
-                                            _pointMatrix[i, j].Marble = null;
+                                            if (_pointMatrix[i, j].Wall != null)
+                                                _pointMatrix[i, j].Marble = null;
+                                            else
+                                                _pointMatrix[i, j] = null;
                                         }
                                     }
                                     break;
